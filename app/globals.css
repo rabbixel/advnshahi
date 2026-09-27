@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   NanakShahi design tokens
+   Warm paper, deep ink, one saffron accent and a few muted supporting hues.
+--------------------------------------------------------------------------- */
+@theme inline {
+  /* Gurmukhi face follows each Latin face so inline Punjabi words fall back per-character. */
+  --font-display: var(--font-newsreader), var(--font-gurmukhi-face), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), var(--font-gurmukhi-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-gurmukhi: var(--font-gurmukhi-face), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+}
+
+@theme {
+  --color-paper: #faf7f1;
+  --color-paper-2: #f3ede2;
+  --color-paper-3: #ebe3d4;
+  --color-ink: #17171b;
+  --color-ink-2: #34343c;
+  --color-muted: #625e68;
+  --color-line: #e2d9c8;
+  --color-line-strong: #cfc3ad;
+
+  --color-saffron: #a84b0c;
+  --color-saffron-bright: #e0781f;
+  --color-saffron-soft: #f6e4d0;
+  --color-indigo: #1d2d4a;
+  --color-indigo-2: #2a3d60;
+  --color-green: #365741;
+  --color-maroon: #7a2a2a;
+  --color-teal: #1f5760;
+  --color-ochre: #7d520f;
+
+  --container-content: 1280px;
+  --container-prose: 44rem;
+
+  --animate-fade-in: fade-in 180ms ease-out;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 1.5rem;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-ink;
+    font-optical-sizing: auto;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection { background: var(--color-saffron-soft); color: var(--color-ink); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-saffron);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  [lang="pa"] { font-family: var(--font-gurmukhi); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-(--container-content) px-4 sm:px-6 lg:px-8;
+  }
+
+  .kicker {
+    @apply font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 200ms ease;
+  }
+  .group:hover .link-underline,
+  .link-underline:hover,
+  .group:focus-visible .link-underline {
+    background-size: 100% 1px;
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-paper;
+  }
+
+  /* ---------------- Article prose ---------------- */
+  .prose {
+    @apply font-display text-ink-2;
+    font-size: 1.1875rem;
+    line-height: 1.72;
+    font-optical-sizing: auto;
+    /* Long URLs or compound words must never widen the page on small screens. */
+    overflow-wrap: break-word;
+  }
+  @media (max-width: 640px) {
+    .prose { font-size: 1.125rem; line-height: 1.7; }
+  }
+  .prose > * + * { margin-top: 1.25em; }
+  .prose p { margin-top: 1.1em; }
+  .prose h2 {
+    @apply text-ink;
+    font-size: 1.85rem;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: 2.2em;
+    padding-top: 0.9em;
+    border-top: 1px solid var(--color-line);
+  }
+  .prose h3 {
+    @apply text-ink;
+    font-size: 1.4rem;
+    line-height: 1.3;
+    font-weight: 600;
+    margin-top: 1.8em;
+  }
+  .prose h4 {
+    @apply font-sans text-ink;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 1.6em;
+  }
+  .prose h2 + *, .prose h3 + *, .prose h4 + * { margin-top: 0.6em; }
+  .prose a {
+    @apply text-saffron underline decoration-saffron/40 underline-offset-[3px] transition-colors;
+  }
+  .prose a:hover { @apply decoration-saffron; }
+  .prose strong { @apply font-semibold text-ink; }
+  .prose ul, .prose ol { padding-left: 1.35em; }
+  .prose ul { list-style: disc; }
+  .prose ol { list-style: decimal; }
+  .prose li { margin-top: 0.45em; padding-left: 0.2em; }
+  .prose li::marker { color: var(--color-saffron); }
+  .prose blockquote {
+    @apply font-display text-ink;
+    border-left: 3px solid var(--color-saffron-bright);
+    padding: 0.2em 0 0.2em 1.1em;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .prose hr { border: 0; border-top: 1px solid var(--color-line); margin: 2.5em 0; }
+  .prose .table-wrap {
+    @apply font-sans;
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: 0.5rem;
+    background: #fff;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    margin-top: 1.6em;
+  }
+  .prose table { width: 100%; border-collapse: collapse; min-width: 32rem; }
+  .prose thead th {
+    @apply bg-paper-2 text-ink;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .prose th, .prose td { padding: 0.7rem 0.9rem; vertical-align: top; border-bottom: 1px solid var(--color-line); }
+  .prose tbody th { font-weight: 600; text-align: left; color: var(--color-ink); }
+  .prose tbody tr:last-child th, .prose tbody tr:last-child td { border-bottom: 0; }
+
+  .prose .callout {
+    @apply font-sans rounded-lg;
+    font-size: 1rem;
+    line-height: 1.65;
+    padding: 1.1rem 1.25rem 1.2rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-paper-2);
+    margin-top: 1.8em;
+  }
+  .prose .callout > * + * { margin-top: 0.6em; }
+  .prose .callout p { margin-top: 0.6em; }
+  .prose .callout .callout-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 0;
+    color: var(--color-saffron);
+  }
+  .prose .callout-important { background: #fbf1e6; border-color: #efd2b3; }
+  .prose .callout-context { background: #eef1f5; border-color: #d3dbe6; }
+  .prose .callout-context .callout-title { color: var(--color-indigo-2); }
+  .prose .callout-tip { background: #eef3ee; border-color: #d0dfd2; }
+  .prose .callout-tip .callout-title { color: var(--color-green); }
+}
+
+/* Horizontal scroll rows (e.g. the secondary nav) without a visible scrollbar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
